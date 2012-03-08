@@ -1,6 +1,6 @@
 class PasParse::Lexer
   
-  class Unexpected < StandardError; end
+  include PasParse
   
   def self.state_attr_reader *as
     self.state_attrs += as
@@ -42,8 +42,8 @@ class PasParse::Lexer
   end
 
   def touch *a, &b
-    r = expect! *a, &b
-    @input.seek -expected.bytes.count, IO::SEEK_CUR
+    r = expect *a, &b
+    @input.seek -r.bytes.count, IO::SEEK_CUR
     r
   end
     
@@ -100,7 +100,7 @@ class PasParse::Lexer
     @input.seek -string.bytes.count, IO::SEEK_CUR
     raise Unexpected
   end
-  
+
   def many *a, &b
     xs = []
     while x = expect!(*a, &b)
@@ -110,7 +110,7 @@ class PasParse::Lexer
   end
   
   def many1 *a, &b
-    [] << expect(*a, &b) << many(*a, &b)
+    [expect(*a, &b), *many(*a, &b)]
   end
   
   # :call-seq:
