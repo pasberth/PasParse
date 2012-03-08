@@ -12,20 +12,20 @@ spec を見るか、 [Rellsでの使用例](https://github.com/pasberth/Rells/bl
 
 たとえば、 PasParse で `"%w[ruby lisp haskell]"` を `["ruby", "lisp", "haskell"]` にパースするなら、このように実装します:
 
-  lexer.between('%w[', ']') do
-    lexer.many do
-      lang = lexer.many1(/\w/).join
-      lexer.many ' '
-      lang
+    lexer.between('%w[', ']') do
+      lexer.many do
+        lang = lexer.many1(/\w/).join
+        lexer.many ' '
+        lang
+      end
     end
-  end
 
 expect や many 、 between といったメソッドは、トークンを「消費」します。
 
 たとえば、
 
-  expect "\n"
-  expect "\n"
+    expect "\n"
+    expect "\n"
 
 は、改行が2回続く事を意味します。
 
@@ -33,10 +33,10 @@ expect や many 、 between といったメソッドは、トークンを「消�
 
 たとえば、
 
-  try do
-    expect "*"
-    unexpect ' '
-  end
+    try do
+      expect "*"
+      unexpect ' '
+    end
 
 とした場合、「'\*'から始まり、なおかつ' 'に続かない」という定義を意味します。
 
