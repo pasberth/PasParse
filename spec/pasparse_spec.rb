@@ -30,6 +30,20 @@ describe "#expect" do
   end
 end
 
+describe "#unexpect" do
+  subject { PasParse::Lexer.new StringIO.new "$ %" }
+  
+  example do
+    expect { subject.unexpect("$") }.should raise_error PasParse::Unexpected
+    subject.instance_eval { @input.read }.should == '$ %'
+  end
+  
+  example do
+    expect { subject.unexpect("%") }.should_not raise_error PasParse::Unexpected
+    subject.instance_eval { @input.read }.should == '$ %'
+  end
+end
+
 describe "#touch" do
   subject { PasParse::Lexer.new StringIO.new "expected" }
 

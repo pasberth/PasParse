@@ -33,12 +33,16 @@ class PasParse::Lexer
     @input = input
   end
   
-  def touch! *a, &b
-    begin
-      touch *a, &b
-    rescue Unexpected
-      nil
-    end
+  %w[touch expect unexpect].each do |a|
+    class_eval(<<-DEF)
+      def #{a}! *a, &b
+        begin
+          #{a} *a, &b
+        rescue Unexpected
+          nil
+        end
+      end
+    DEF
   end
 
   def touch *a, &b
@@ -46,17 +50,15 @@ class PasParse::Lexer
     @input.seek -r.bytes.count, IO::SEEK_CUR
     r
   end
-    
-  # :call-seq:
-  #   expect!(expected=nil, &combinator)
-  def expect! *a, &b
-    begin
-      expect *a, &b
-    rescue Unexpected
-      nil
+  
+  def unexpect *a, &b
+    if touch! *a, &b
+      raise Unexpected
+    else
+      true
     end
   end
-  
+    
   # :call-seq:
   #   expect(expected=nil, &combinator)
   def expect *a
