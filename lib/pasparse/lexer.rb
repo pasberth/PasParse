@@ -62,9 +62,7 @@ class PasParse::Lexer
   # :call-seq:
   #   expect(expected=nil, &combinator)
   def expect *a
-    if a.empty?
-      return try { yield }
-    end
+    return yield if a.empty?
     
     expected = a.shift
     string = ""
